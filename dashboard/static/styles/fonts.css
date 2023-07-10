@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "Panton";
+    src: url("../fonts/panton-semibold.otf") format("opentype");
+    font-weight: semibold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Panton";
+    src: url("../fonts/panton-regular.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
