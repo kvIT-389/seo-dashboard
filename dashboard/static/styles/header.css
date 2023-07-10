@@ -1,0 +1,46 @@
+header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.7rem;
+  background-color: white;
+}
+h1 {
+  display: inline;
+  margin: 0;
+  margin-right: auto;
+  font-size: 2.4rem;
+  vertical-align: middle;
+}
+#date-selector {
+  display: flex;
+  align-items: center;
+  flex-basis: 300px;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background-color: var(--lilac);
+}
+#calendar-icon {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.7rem;
+  background-image: url("../images/calendar.png");
+  background-size: contain;
+}
+#selected-period-label {
+  display: inline;
+  margin: 0;
+  font-size: 1.25rem;
+}
+#dropdown-icon {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-color: var(--purple);
+  margin-left: auto;
+  background-image: url("../images/dropdown-arrow.png");
+  background-size: contain;
+}

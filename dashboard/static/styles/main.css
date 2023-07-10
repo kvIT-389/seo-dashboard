@@ -1,3 +1,19 @@
+html {
+  --purple: #352958;
+  --gray: #3d3d3d;
+  --lilac: #e0e3ff;
+  --pink: #f23b67;
+}
 * {
+  font-size: 16px;
+  font-weight: 400;
   font-family: "Panton";
+  color: var(--purple);
+}
+body {
+  margin: 0;
+  background-color: var(--lilac);
+}
+h1, h2 {
+  font-weight: 600;
 }

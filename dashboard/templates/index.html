@@ -6,11 +6,19 @@
     {% load static %}
     <link rel="stylesheet" href="{% static "styles/main.css" %}">
     <link rel="stylesheet" href="{% static "styles/fonts.css" %}">
+    <link rel="stylesheet" href="{% static "styles/header.css" %}">
     <title>SEO Dashboard</title>
   </head>
   <body>
     <main>
-      <h1>SEO Dashboard App</h1>
+      <header>
+        <h1>SEO Dashboard Name</h1>
+        <div id="date-selector">
+          <span id="calendar-icon"></span>
+          <span id="selected-period-label">Последние 30 дней</span>
+          <span id="dropdown-icon"></span>
+        </div>
+      </header>
     </main>
   </body>
 </html>
