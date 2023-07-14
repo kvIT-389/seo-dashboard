@@ -1,0 +1,86 @@
+{
+    "metrika_api_url": "https://api-metrika.yandex.net/stat/v1/data",
+    "headers": {
+        "GET": "/management/v1/counters HTTP/1.1",
+        "Host": "api-metrika.yandex.net",
+        "Authorization": "OAuth ",
+        "Content-Type": "application/x-yametrika+json"
+    },
+    "general_api_params": {
+        "ids": 0,
+        "accuracy": "full",
+        "limit": 100000
+    },
+    "section_specific_api_params": {
+        "devices": {
+            "metrics": [
+                "ym:s:visits"
+            ],
+            "dimensions": [
+                "ym:s:deviceCategory"
+            ],
+            "sort": "ym:s:visits"
+        },
+        "visits": {
+            "metrics": [
+                "ym:s:visits",
+                "ym:s:newUsers"
+            ],
+            "dimensions": [
+                "ym:s:date"
+            ],
+            "sort": "ym:s:date"
+        },
+        "traffic_segmentation": {
+            "metrics": [
+                "ym:s:visits"
+            ],
+            "dimensions": [
+                "ym:s:lastSearchPhrase"
+            ],
+            "sort": "-ym:s:visits"
+        },
+        "traffic_sources": {
+            "metrics": [
+                "ym:s:visits"
+            ],
+            "dimensions": [
+                "ym:s:trafficSource"
+            ],
+            "sort": "ym:s:visits"
+        },
+        "search_engines": {
+            "metrics": [
+                "ym:s:visits"
+            ],
+            "dimensions": [
+                "ym:s:searchEngineRoot"
+            ],
+            "sort": "-ym:s:visits"
+        },
+        "goal_conversions": {
+            "metrics": [
+                "ym:s:visits"
+            ],
+            "dimensions": [
+                "ym:s:goal",
+                "ym:s:date"
+            ],
+            "sort": "ym:s:date"
+        },
+        "visits_groups": {
+            "metrics": [
+                "ym:s:visits",
+                "ym:s:newUsers"
+            ],
+            "dimensions": [
+                "ym:s:date",
+                "ym:s:trafficSource",
+                "ym:s:deviceCategory",
+                "ym:s:searchEngineRoot",
+                "ym:s:searchPhrase",
+                "ym:s:goal"
+            ]
+        }
+    }
+}
