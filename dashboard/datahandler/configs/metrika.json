@@ -11,76 +11,60 @@
         "accuracy": "full",
         "limit": 100000
     },
-    "section_specific_api_params": {
-        "devices": {
-            "metrics": [
-                "ym:s:visits"
-            ],
-            "dimensions": [
-                "ym:s:deviceCategory"
-            ],
-            "sort": "ym:s:visits"
+    "specific_api_params": {
+        "device_category": {
+            "metrics": {
+                "ym:s:visits": "visits"
+            },
+            "dimensions": {
+                "ym:s:deviceCategory": "device_category"
+            }
+        },
+        "traffic_source": {
+            "metrics": {
+                "ym:s:visits": "visits"
+            },
+            "dimensions": {
+                "ym:s:trafficSource": "traffic_source"
+            }
+        },
+        "search_phrase": {
+            "metrics": {
+                "ym:s:visits": "visits"
+            },
+            "dimensions": {
+                "ym:s:searchPhrase": "search_phrase"
+            }
+        },
+        "search_engine": {
+            "metrics": {
+                "ym:s:visits": "visits"
+            },
+            "dimensions": {
+                "ym:s:searchEngineRoot": "search_engine"
+            }
+        },
+        "goal": {
+            "metrics": {
+                "ym:s:visits": "visits"
+            },
+            "dimensions": {
+                "ym:s:goal": "goal"
+            }
         },
         "visits": {
-            "metrics": [
-                "ym:s:visits",
-                "ym:s:newUsers"
-            ],
-            "dimensions": [
-                "ym:s:date"
-            ],
-            "sort": "ym:s:date"
-        },
-        "traffic_segmentation": {
-            "metrics": [
-                "ym:s:visits"
-            ],
-            "dimensions": [
-                "ym:s:lastSearchPhrase"
-            ],
-            "sort": "-ym:s:visits"
-        },
-        "traffic_sources": {
-            "metrics": [
-                "ym:s:visits"
-            ],
-            "dimensions": [
-                "ym:s:trafficSource"
-            ],
-            "sort": "ym:s:visits"
-        },
-        "search_engines": {
-            "metrics": [
-                "ym:s:visits"
-            ],
-            "dimensions": [
-                "ym:s:searchEngineRoot"
-            ],
-            "sort": "-ym:s:visits"
-        },
-        "goal_conversions": {
-            "metrics": [
-                "ym:s:visits"
-            ],
-            "dimensions": [
-                "ym:s:goal",
-                "ym:s:date"
-            ],
-            "sort": "ym:s:date"
-        },
-        "visits_groups": {
-            "metrics": [
-                "ym:s:visits",
-                "ym:s:newUsers"
-            ],
-            "dimensions": [
-                "ym:s:date",
-                "ym:s:trafficSource",
-                "ym:s:deviceCategory",
-                "ym:s:searchEngineRoot",
-                "ym:s:searchPhrase",
-                "ym:s:goal"
-            ]
+            "metrics": {
+                "ym:s:visits": "visits",
+                "ym:s:newUsers": "new_users"
+            },
+            "dimensions": {
+                "ym:s:date": "date",
+                "ym:s:trafficSource": "traffic_source",
+                "ym:s:deviceCategory": "device_category",
+                "ym:s:searchEngineRoot": "search_engine",
+                "ym:s:searchPhrase": "search_phrase",
+                "ym:s:goal": "goal"
+            }
         }
     }
 }

@@ -20,28 +20,28 @@ class MetrikaHandler:
         # URL of Metrika API
         self._api_url: str = config.get("metrika_api_url")
 
-        # Request headers
+        # Metrika API request headers
         self._headers: dict = config.get("headers")
 
-        # Add access token from environment
+        # Add Metrika access token from environment
         self._headers["Authorization"] = "OAuth" + os.environ.get(
             "METRIKA_API_ACCESS_TOKEN", ""
         )
 
-        # API parameters general for all data sections
+        # Metrika API parameters general for all data sections
         self._general_api_params: dict = config.get(
-            "general_api_params"
+            "general_api_params", {}
         )
 
-        # Add counter ID from environment
+        # Add Metrika counter ID from environment
         self._general_api_params["ids"] = os.environ.get(
             "METRIKA_COUNTER_ID", 0
         )
 
-        # API parameters specific for each data section
+        # Metrika API parameters specific for each data section
         # (dimensions, metrics, ...)
-        self._section_specific_api_params: dict = config.get(
-            "section_specific_api_params"
+        self._specific_api_params: dict = config.get(
+            "specific_api_params", {}
         )
 
     def __new__(cls):
@@ -54,15 +54,15 @@ class MetrikaHandler:
 
         return cls.instance
 
-    def get_data(self, data_section: str=None, **kwargs) -> dict:
-        section_params: dict = self._section_specific_api_params.get(
+    def get_data(self, data_section: str, **kwargs) -> dict:
+        section_params: dict = self._specific_api_params.get(
             data_section, {}
         )
 
         response: requests.Response = requests.get(
             url=self._api_url,
-            params=self._general_api_params | section_params | kwargs,
-            headers=self._headers
+            headers=self._headers,
+            params=self._general_api_params | section_params | kwargs
         )
 
         response_json: dict = response.json()
@@ -74,12 +74,12 @@ class MetrikaHandler:
         for data in response_json.get("data", []):
             result["data"].append({
                 name: dim.get("name") for (name, dim) in zip(
-                    section_params.get("dimensions", []),
+                    section_params.get("dimensions", {}).values(),
                     data.get("dimensions")
                 )
             } | {
                 name: metric for (name, metric) in zip(
-                    section_params.get("metrics", []),
+                    section_params.get("metrics", {}).values(),
                     data.get("metrics")
                 )
             })
