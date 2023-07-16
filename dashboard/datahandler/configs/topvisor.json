@@ -1,0 +1,28 @@
+{
+    "general_api_url": "https://api.topvisor.com/v2/json/get",
+    "specific_api_urls": {
+        "searchers_and_regions": "projects_2/projects",
+        "positions": "positions_2/history",
+        "tops": "positions_2/summary"
+    },
+    "headers": {
+        "User-Id": 0,
+        "Authorization": "bearer ",
+        "Content-Type": "application/json"
+    },
+    "general_api_params": {
+        "project_id": 0,
+        "show_headers": 1
+    },
+    "specific_api_params": {
+        "searchers_and_regions": {
+            "show_searchers_and_regions": 1
+        },
+        "positions": {
+            "type_range": 5
+        },
+        "tops": {
+            "show_tops": 1
+        }
+    }
+}
