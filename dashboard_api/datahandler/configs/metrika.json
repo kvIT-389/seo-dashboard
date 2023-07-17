@@ -2,7 +2,6 @@
     "metrika_api_url": "https://api-metrika.yandex.net/stat/v1/data",
     "headers": {
         "GET": "/management/v1/counters HTTP/1.1",
-        "Host": "api-metrika.yandex.net",
         "Authorization": "OAuth ",
         "Content-Type": "application/x-yametrika+json"
     },

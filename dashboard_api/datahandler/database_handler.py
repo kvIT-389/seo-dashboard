@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from .metrika_handler import MetrikaHandler
 from .topvisor_handler import TopvisorHandler
 
-from dashboard.models import *
+from dashboard_api.models import *
 
 import datetime
 

@@ -1,15 +1,11 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.http import HttpRequest, JsonResponse
 
-from dashboard.datahandler.metrika_handler import MetrikaHandler
-from dashboard.datahandler.topvisor_handler import TopvisorHandler
-from dashboard.datahandler.database_handler import DatabaseHandler
+from .datahandler.metrika_handler import MetrikaHandler
+from .datahandler.topvisor_handler import TopvisorHandler
+from .datahandler.database_handler import DatabaseHandler
 
 from .models import *
 
-
-def index(request: HttpRequest) -> HttpResponse:
-    return render(request, "index.html")
 
 def get_data(
     request: HttpRequest,
