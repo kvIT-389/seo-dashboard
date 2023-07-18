@@ -28,15 +28,18 @@ class DatabaseHandler:
 
         return cls.instance
 
-    @classmethod
-    def _filter_dates(cls, data: list[dict], model: models.Model):
+    @staticmethod
+    def _filter_dates(data: list[dict], model: models.Model):
         loaded_dates = list(map(
             lambda date: date.strftime("%Y-%m-%d"),
             model.objects.dates("date", "day")
         ))
 
+        today = datetime.date.today().strftime("%Y-%m-%d")
+
         return list(filter(
-            lambda d: d.get("date") not in loaded_dates, data
+            lambda d: d.get("date") == today or \
+                      d.get("date") not in loaded_dates, data
         ))
 
     def load_data(self, data_section: str, **kwargs):
