@@ -1,9 +1,6 @@
-from django.core.exceptions import FieldError
-
 from django.db import connection
 
-from django.db.models import Model
-from django.db.utils import IntegrityError
+from django.db import models
 
 from .metrika_handler import MetrikaHandler
 from .topvisor_handler import TopvisorHandler
@@ -15,7 +12,11 @@ import datetime
 
 class DatabaseHandler:
     def __init__(self) -> None:
-        pass
+        self._load_methods = {
+            "visits": self.load_visits,
+            "positions": self.load_positions,
+            "tops": self.load_tops
+        }
 
     def __new__(cls):
         """
@@ -27,90 +28,51 @@ class DatabaseHandler:
 
         return cls.instance
 
-    def load_visits(self, **kwargs) -> list:
-        deps: dict[str, Model] = {
-            "traffic_source": TrafficSource,
-            "device_category": DeviceCategory,
-            "search_engine": SearchEngine,
-            "search_phrase": SearchPhrase,
-            "goal": Goal
-        }
+    @classmethod
+    def _filter_dates(cls, data: list[dict], model: models.Model):
+        loaded_dates = list(map(
+            lambda date: date.strftime("%Y-%m-%d"),
+            model.objects.dates("date", "day")
+        ))
 
-        objects: dict[str, dict[str, Model]] = {}
+        return list(filter(
+            lambda d: d.get("date") not in loaded_dates, data
+        ))
 
-        for (data_section, model) in deps.items():
-            data: list = MetrikaHandler().get_data(
-                data_section, **dict(
-                    date1=kwargs.get("date1", "today"),
-                    date2=kwargs.get("date2", "today")
-                )
-            ).get("data", [])
+    def load_data(self, data_section: str, **kwargs):
+        load_method = self._load_methods.get(data_section)
 
-            objects[data_section] = {}
-            for d in data:
-                obj = model.objects.get_or_create(
-                    **{
-                        data_section: d.get(data_section)
-                    }
-                )[0]
-                objects[data_section][obj.__dict__.get(data_section)] = obj
+        if (load_method is None):
+            return []
 
-        visits: list[dict] = MetrikaHandler().get_data(
+        return load_method(**kwargs)
+
+    def load_visits(self, **kwargs):
+        data = MetrikaHandler().get_data(
             "visits", **kwargs
-        ).get("data", [])
+        )
 
-        exceptions = []
+        return Visits.load(
+            self._filter_dates(data, Visits)
+        )
 
-        for d in visits:
-            try:
-                for (data_section, data) in objects.items():
-                    d[data_section] = data.get(d[data_section])
-
-                Visits.objects.get_or_create(**d)
-
-            except (IntegrityError, FieldError, ValueError) as e:
-                exceptions.append(e)
-
-        return exceptions
-
-    def load_regions(self) -> list:
-        return []
-
-    def load_positions(self) -> list:
-        positions: list[dict] = TopvisorHandler().get_positions(
+    def load_positions(self, **kwargs):
+        data = TopvisorHandler().get_positions(
             self.get_regions_indexes()
         )
 
-        exceptions = []
+        return Position.load(
+            self._filter_dates(data, Position)
+        )
 
-        for d in positions:
-            try:
-                d["search_phrase"] = SearchPhrase.objects.get_or_create(
-                    search_phrase=d.get("search_phrase")
-                )[0]
-
-                Position.objects.update_or_create(**d)
-
-            except (IntegrityError, FieldError, ValueError) as e:
-                exceptions.append(e)
-
-        return exceptions
-
-    def load_tops(self) -> list:
-        data: list[dict] = TopvisorHandler().get_tops(
+    def load_tops(self, **kwargs):
+        data = TopvisorHandler().get_tops(
             self.get_regions_indexes()
         )
 
-        exceptions = []
-
-        for d in data:
-            try:
-                SearchResultsTop.objects.update_or_create(**d)
-
-            except (IntegrityError, FieldError, ValueError) as e:
-                exceptions.append(e)
-
-        return exceptions
+        return SearchResultsTop.load(
+            self._filter_dates(data, SearchResultsTop)
+        )
 
     def get_data(self, data_section: str, **kwargs) -> dict:
         today = datetime.date.today().strftime("%Y-%m-%d")
@@ -136,7 +98,7 @@ class DatabaseHandler:
                 ]
             }
 
-        mods: dict[str, Model] = {
+        mods: dict[str, models.Model] = {
             "traffic_source": TrafficSource,
             "device_category": DeviceCategory,
             "search_engine": SearchEngine,
