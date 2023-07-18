@@ -67,12 +67,8 @@ class MetrikaHandler:
 
         response_json: dict = response.json()
 
-        result = {
-            "data": [],
-            "errors": response_json.get("errors")
-        }
-        for data in response_json.get("data", []):
-            result["data"].append({
+        return [
+            {
                 name: dim.get("name") for (name, dim) in zip(
                     section_params.get("dimensions", {}).values(),
                     data.get("dimensions")
@@ -82,9 +78,9 @@ class MetrikaHandler:
                     section_params.get("metrics", {}).values(),
                     data.get("metrics")
                 )
-            })
-
-        return result
+            }
+            for data in response_json.get("data", [])
+        ]
 
 
 def main():

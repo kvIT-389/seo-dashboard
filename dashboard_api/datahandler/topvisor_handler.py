@@ -72,8 +72,6 @@ class TopvisorHandler:
         data_section: str,
         **kwargs
     ) -> dict:
-        today: datetime.date = datetime.date.today()
-
         section_params: dict = self._specific_api_params.get(
             data_section, {}
         )
@@ -114,12 +112,7 @@ class TopvisorHandler:
         regions_indexes: list[int]
     ) -> list[dict]:
         date2 = datetime.date.today()
-        # First day of previous month
-        date1 = datetime.date(
-            year=date2.year - (date2.month == 1),
-            month=(date2.month+10) % 12 + 1,
-            day=1
-        )
+        date1 = date2.replace(day=1) - datetime.timedelta(days=1)
 
         data: dict = self._get_data(
             "positions", **dict(
@@ -156,8 +149,7 @@ class TopvisorHandler:
         regions_indexes: list[int]
     ) -> list[dict]:
         date2 = datetime.date.today()
-        # First day of current month
-        date1 = date2.replace(day=1)
+        date1 = date2.replace(day=1) - datetime.timedelta(days=1)
 
         result = []
 
@@ -185,3 +177,11 @@ class TopvisorHandler:
             )
 
         return result
+
+
+def main():
+    print("Topvisor Handler module.")
+
+
+if __name__ == "__main__":
+    main()
