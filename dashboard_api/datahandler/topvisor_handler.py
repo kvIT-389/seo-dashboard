@@ -67,16 +67,12 @@ class TopvisorHandler:
 
         return cls.instance
 
-    def _get_data(
-        self,
-        data_section: str,
-        **kwargs
-    ) -> dict:
+    def _get_data(self, data_section: str, **kwargs):
         section_params: dict = self._specific_api_params.get(
             data_section, {}
         )
 
-        response: requests.Response = requests.get(
+        response = requests.get(
             url="{}/{}".format(
                 self._general_api_url,
                 self._specific_api_urls.get(data_section, "")
@@ -92,12 +88,10 @@ class TopvisorHandler:
             "errors": response_json.get("errors")
         }
 
-    def get_regions_indexes(
-        self
-    ) -> list[int]:
+    def get_regions_indexes(self):
         data: dict = self._get_data("searchers_and_regions")
 
-        regions_indexes = set()
+        regions_indexes: set[int] = set()
         for project in data.get("data", []):
             for searcher in project.get("searchers", []):
                 regions_indexes |= {
@@ -107,10 +101,7 @@ class TopvisorHandler:
 
         return list(regions_indexes - {0})
 
-    def get_positions(
-        self,
-        regions_indexes: list[int]
-    ) -> list[dict]:
+    def get_positions(self, regions_indexes: list[int]):
         date2 = datetime.date.today()
         date1 = date2.replace(day=1) - datetime.timedelta(days=1)
 
@@ -144,14 +135,11 @@ class TopvisorHandler:
             for date in data["headers"]["dates"]
         ]
 
-    def get_tops(
-        self,
-        regions_indexes: list[int]
-    ) -> list[dict]:
+    def get_tops(self, regions_indexes: list[int]):
         date2 = datetime.date.today()
         date1 = date2.replace(day=1) - datetime.timedelta(days=1)
 
-        result = []
+        result: list[dict] = []
 
         for region_index in regions_indexes:
             data: dict = self._get_data(

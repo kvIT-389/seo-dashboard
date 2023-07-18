@@ -54,12 +54,12 @@ class MetrikaHandler:
 
         return cls.instance
 
-    def get_data(self, data_section: str, **kwargs) -> dict:
+    def get_data(self, data_section: str, **kwargs):
         section_params: dict = self._specific_api_params.get(
             data_section, {}
         )
 
-        response: requests.Response = requests.get(
+        response = requests.get(
             url=self._api_url,
             headers=self._headers,
             params=self._general_api_params | section_params | kwargs
