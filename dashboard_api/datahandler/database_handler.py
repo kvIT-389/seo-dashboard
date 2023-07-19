@@ -1,13 +1,11 @@
-from django.db import connection
+import datetime
 
 from django.db import models
 
 from .metrika_handler import MetrikaHandler
 from .topvisor_handler import TopvisorHandler
 
-from dashboard_api.models import *
-
-import datetime
+from dashboard_api.models import SearchResultsTop, Visits, Position
 
 
 class DatabaseHandler:
@@ -16,6 +14,78 @@ class DatabaseHandler:
             "visits": self.load_visits,
             "positions": self.load_positions,
             "tops": self.load_tops
+        }
+
+        self._specific_params = {
+            "new_users": {
+                "source_model": Visits,
+                "group_by": {
+                    "fields": ("date", ),
+                    "aggregates": {
+                        "visits": models.Sum("visits"),
+                        "new_users": models.Sum("new_users")
+                    }
+                },
+                "order_by": ("date", )
+            },
+            "traffic_sources": {
+                "model": Visits,
+                "group_by": {
+                    "fields": ("traffic_source", ),
+                    "aggregates": {
+                        "visits": models.Sum("visits")
+                    }
+                },
+                "order_by": ("-visits", )
+            },
+            "device_categories": {
+                "model": Visits,
+                "group_by": {
+                    "fields": ("device_category", ),
+                    "aggregates": {
+                        "visits": models.Sum("visits")
+                    }
+                },
+                "order_by": ("-visits", )
+            },
+            "search_engines": {
+                "model": Visits,
+                "group_by": {
+                    "fields": ("search_engine", ),
+                    "aggregates": {
+                        "visits": models.Sum("visits")
+                    }
+                },
+                "order_by": ("visits", )
+            },
+            "search_phrases": {
+                "model": Visits,
+                "group_by": {
+                    "fields": ("search_phrase", ),
+                    "aggregates": {
+                        "visits": models.Sum("visits")
+                    }
+                },
+                "order_by": ("-visits", )
+            },
+            "goals": {
+                "model": Visits,
+                "group_by": {
+                    "fields": ("date", "goal"),
+                    "aggregates": {
+                        "visits": models.Sum("visits")
+                    }
+                },
+                "order_by": ("date", )
+            },
+            "positions": {
+                "model": Position,
+                "order_by": ("date", )
+            },
+            "tops": {
+                "model": SearchResultsTop,
+                "order_by": ("date", "position")
+            }
         }
 
     def __new__(cls):
@@ -48,7 +118,12 @@ class DatabaseHandler:
         if (load_method is None):
             return []
 
-        return load_method(**kwargs)
+        today = datetime.date.today().strftime("%Y-%m-%d")
+
+        return load_method(
+            date1=kwargs.get("date1", today),
+            date2=kwargs.get("date2", today)
+        )
 
     def load_visits(self, **kwargs):
         data = MetrikaHandler().get_data(
@@ -61,7 +136,7 @@ class DatabaseHandler:
 
     def load_positions(self, **kwargs):
         data = TopvisorHandler().get_positions(
-            self.get_regions_indexes()
+            TopvisorHandler().get_regions_indexes()
         )
 
         return Position.load(
@@ -70,74 +145,56 @@ class DatabaseHandler:
 
     def load_tops(self, **kwargs):
         data = TopvisorHandler().get_tops(
-            self.get_regions_indexes()
+            TopvisorHandler().get_regions_indexes()
         )
 
         return SearchResultsTop.load(
             self._filter_dates(data, SearchResultsTop)
         )
 
-    def get_data(self, data_section: str, **kwargs) -> dict:
+    def get_data(
+        self,
+        data_section: str,
+        **kwargs
+    ) -> (models.QuerySet | None):
+        if (data_section not in self._specific_params):
+            return
+
         today = datetime.date.today().strftime("%Y-%m-%d")
 
-        date1: str = kwargs.get("date1", today)
-        date2: str = kwargs.get("date2", today)
+        dates_filtered = self._specific_params.get(
+            data_section, {}
+        ).get(
+            "model"
+        ).objects.filter(
+            date__range=[
+                kwargs.get("date1", [today])[0],
+                kwargs.get("date2", [today])[0]
+            ]
+        ).order_by(
+            *self._specific_params.get(
+                data_section, {}
+            ).get(
+                "order_by"
+            )
+        )
 
         if (data_section == "positions"):
-            return {
-                "data": [
-                    *Position.objects.all().filter(
-                        date__range=[date1, date2]
-                    ).values()
-                ]
-            }
+            return dates_filtered
 
         if (data_section == "tops"):
-            return {
-                "data": [
-                    *SearchResultsTop.objects.all().filter(
-                        date__range=[date1, date2]
-                    ).values()
-                ]
-            }
+            qs = dates_filtered.values("date", "region_index")
 
-        mods: dict[str, models.Model] = {
-            "traffic_source": TrafficSource,
-            "device_category": DeviceCategory,
-            "search_engine": SearchEngine,
-            "search_phrase": SearchPhrase,
-            "goal": Goal
-        }
+            max_value = qs.aggregate(
+                max_value=models.Max("value")
+            ).get("max_value")
 
-        with connection.cursor() as cursor:
-            cursor.execute(
-                f"""
-                    select D.{data_section}, sum(V.visits) as DV
-                    from visits V
-                    join {mods.get(data_section, DeviceCategory)._meta.db_table} D
-                    on V.{data_section}_id=D.id
-                    where V.date between %s and %s
-                    group by D.{data_section}
-                    order by DV desc
-                """,
-                [
-                    kwargs.get("date1", today),
-                    kwargs.get("date2", today)
-                ]
+            return qs.annotate(
+                percentage=models.F("value") * 100 / max_value
             )
 
-            data = list(cursor.fetchall())
-
-        return {
-            "data": [
-                {
-                    key: value for key, value in zip(
-                        (data_section, "visits"), values
-                    )
-                }
-                for values in data
-            ]
-        }
-
-    def get_regions_indexes(self) -> list[int]:
-        return TopvisorHandler().get_regions_indexes()
+        return dates_filtered.group_by(
+            **self._specific_params.get(
+                data_section
+            ).get("group_by")
+        )
