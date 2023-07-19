@@ -88,6 +88,27 @@ class TopvisorHandler:
             "errors": response_json.get("errors")
         }
 
+    def _get_dates(self, **kwargs):
+        """
+        Return dictionary with two dates: `date2`, which is
+        `kwargs["ref_date"]` or, by default, current date,
+        and `date1` which is the first day of previous month
+        relatively to `date2`.
+        """
+
+        date2: datetime.date | None = kwargs.get("ref_date")
+        if (date2 is None):
+            date2 = datetime.date.today()
+        else:
+            date2 = datetime.date.fromisoformat(date2[0])
+
+        date1 = date2.replace(day=1) - datetime.timedelta(days=1)
+
+        return dict(
+            date1=date1.isoformat(),
+            date2=date2.isoformat()
+        )
+
     def get_regions_indexes(self):
         data: dict = self._get_data("searchers_and_regions")
 
@@ -101,16 +122,15 @@ class TopvisorHandler:
 
         return list(regions_indexes - {0})
 
-    def get_positions(self, regions_indexes: list[int]):
-        date2 = datetime.date.today()
-        date1 = date2.replace(day=1) - datetime.timedelta(days=1)
-
+    def get_positions(
+        self,
+        regions_indexes: list[int],
+        **kwargs
+    ):
         data: dict = self._get_data(
             "positions", **dict(
-                regions_indexes=regions_indexes,
-                date1=date1.strftime("%Y-%m-%d"),
-                date2=date2.strftime("%Y-%m-%d")
-            )
+                regions_indexes=regions_indexes
+            ) | self._get_dates(**kwargs)
         ).get("data", {})
 
         return [
@@ -135,20 +155,20 @@ class TopvisorHandler:
             for date in data["headers"]["dates"]
         ]
 
-    def get_tops(self, regions_indexes: list[int]):
-        date2 = datetime.date.today()
-        date1 = date2.replace(day=1) - datetime.timedelta(days=1)
-
+    def get_tops(
+        self,
+        regions_indexes: list[int],
+        **kwargs
+    ):
         result: list[dict] = []
 
         for region_index in regions_indexes:
             data: dict = self._get_data(
                 "tops", **dict(
                     region_index=region_index,
-                    dates=[
-                        date1.strftime("%Y-%m-%d"),
-                        date2.strftime("%Y-%m-%d")
-                    ]
+                    dates=list(
+                        self._get_dates(**kwargs).values()
+                    )
                 )
             ).get("data", {})
 

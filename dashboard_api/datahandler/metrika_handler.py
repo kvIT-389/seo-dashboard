@@ -4,6 +4,8 @@ import dotenv
 import json
 import requests
 
+import datetime
+
 from pathlib import Path
 
 
@@ -54,6 +56,20 @@ class MetrikaHandler:
 
         return cls.instance
 
+    def _get_dates(self, **kwargs):
+        """
+        Return dictionary with two dates: `date1` and `date2`
+        which is `kwargs["date1"]` and `kwargs["date2"]`
+        respectively or current date if one or both don't exist. 
+        """
+
+        today = datetime.date.today().isoformat()
+
+        return dict(
+            date1=kwargs.get("date1", today),
+            date2=kwargs.get("date2", today)
+        )
+
     def get_data(self, data_section: str, **kwargs):
         section_params: dict = self._specific_api_params.get(
             data_section, {}
@@ -62,7 +78,9 @@ class MetrikaHandler:
         response = requests.get(
             url=self._api_url,
             headers=self._headers,
-            params=self._general_api_params | section_params | kwargs
+            params=self._general_api_params |
+                   section_params |
+                   self._get_dates(**kwargs)
         )
 
         response_json: dict = response.json()

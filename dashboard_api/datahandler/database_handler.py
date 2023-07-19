@@ -101,11 +101,11 @@ class DatabaseHandler:
     @staticmethod
     def _filter_dates(data: list[dict], model: models.Model):
         loaded_dates = list(map(
-            lambda date: date.strftime("%Y-%m-%d"),
+            lambda date: date.isoformat(),
             model.objects.dates("date", "day")
         ))
 
-        today = datetime.date.today().strftime("%Y-%m-%d")
+        today = datetime.date.today().isoformat()
 
         return list(filter(
             lambda d: d.get("date") == today or \
@@ -118,12 +118,7 @@ class DatabaseHandler:
         if (load_method is None):
             return []
 
-        today = datetime.date.today().strftime("%Y-%m-%d")
-
-        return load_method(
-            date1=kwargs.get("date1", today),
-            date2=kwargs.get("date2", today)
-        )
+        return load_method(**kwargs)
 
     def load_visits(self, **kwargs):
         data = MetrikaHandler().get_data(
@@ -136,7 +131,8 @@ class DatabaseHandler:
 
     def load_positions(self, **kwargs):
         data = TopvisorHandler().get_positions(
-            TopvisorHandler().get_regions_indexes()
+            TopvisorHandler().get_regions_indexes(),
+            **kwargs
         )
 
         return Position.load(
@@ -145,7 +141,8 @@ class DatabaseHandler:
 
     def load_tops(self, **kwargs):
         data = TopvisorHandler().get_tops(
-            TopvisorHandler().get_regions_indexes()
+            TopvisorHandler().get_regions_indexes(),
+            **kwargs
         )
 
         return SearchResultsTop.load(
