@@ -5,6 +5,49 @@ from django.db.utils import IntegrityError
 
 
 """
+Custom queryset and manager classes
+for FieldAutoLoadModel model abstract class
+"""
+
+class FieldAutoLoadModelQuerySet(models.QuerySet):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def group_by(
+        self,
+        fields: tuple[str],
+        aggregates: dict[str, models.Aggregate]
+    ):
+        qs = self.values(*fields).annotate(**aggregates)
+
+        for field in fields:
+            model = self.model.fields_models.get(field)
+
+            if (model is None):
+                continue
+
+            for r in qs:
+                if (r[field] is None):
+                    continue
+
+                r[field] = model.objects.get(
+                    pk=r[field]
+                )
+
+        return qs
+
+
+class FieldAutoLoadModelManager(models.Manager):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def get_queryset(self):
+        return FieldAutoLoadModelQuerySet(
+            self.model,
+            using=self._db
+        )
+
+"""
 Abstract base models
 """
 
@@ -66,7 +109,14 @@ class FieldAutoLoadModel(LoadedModel):
     """
     Model which contains a referred fields (ForeignKey)
     and automatically load its models when self load(...) called.
+
+    Must redefine class property `fields_models` which is `dict`
+    object with keys equal to name of model fields which are
+    referred to some other model; and values equal to corresponding
+    `LoadedModel` model type.
     """
+
+    objects = FieldAutoLoadModelManager()
 
     class Meta:
         abstract = True
@@ -105,7 +155,7 @@ class FieldAutoLoadModel(LoadedModel):
 
     @classmethod
     @property
-    def fields_models(cls):
+    def fields_models(cls) -> dict[str, LoadedModel]:
         return {}
 
 """
@@ -235,7 +285,7 @@ class Visits(FieldAutoLoadModel):
 
     @classmethod
     @property
-    def fields_models(cls):
+    def fields_models(cls) -> dict[str, LoadedModel]:
         return super().fields_models | dict(
             traffic_source=TrafficSource,
             device_category=DeviceCategory,
@@ -265,7 +315,7 @@ class Position(FieldAutoLoadModel):
 
     @classmethod
     @property
-    def fields_models(cls):
+    def fields_models(cls) -> dict[str, LoadedModel]:
         return super().fields_models | dict(
             search_phrase=SearchPhrase,
         )
