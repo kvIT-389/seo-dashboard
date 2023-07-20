@@ -6,6 +6,7 @@
   import SearchEngines from "./components/SearchEngines.vue"
   import Visits from "./components/Visits.vue"
   import GoalsConversions from "./components/GoalsConversions.vue"
+  import SitePositions from "./components/SitePositions.vue"
 </script>
 
 <template>
@@ -38,6 +39,11 @@
                       :goalAchieveData="goalAchieveData"
                       :conversionData="goalConversionData">
     </GoalsConversions>
+  </div>
+  <div class="row">
+    <SitePositions :tableHeaders="sitePositionsTableHeaders"
+                   :tableItems="sitePositionsTableItems">
+    </SitePositions>
   </div>
 </template>
 
@@ -132,6 +138,34 @@
         ],
         goalAchieveData: [120, 132, 101, 134, 90, 230, 210],
         goalConversionData: [2, 18, 19, 64, 29, 33, 99,],
+        sitePositionsTableHeaders:[
+          { text: "Запрос", value: "search_phrase", width: 600},
+          { text: "Дата 1", value: "position1", width: 70},
+          { text: "Дата 2", value: "position2", width: 70}
+        ],
+        sitePositionsTableItems: [
+          { search_phrase: "газобетон", position1: "3", position2: "3"},
+          { search_phrase: "газобетон в иркутске", position1: "1", position2: "1"},
+          { search_phrase: "где качественный газобетон в иркутске цена за куб купить сегодня дёшево", position1: "1", position2: "2"},
+          { search_phrase: "купить газобетон", position1: "1", position2: "1"},
+          { search_phrase: "купить газобетон в иркутске", position1: "1", position2: "1"},
+          { search_phrase: "газобетон иркутск цена", position1: "1", position2: "1"},
+          { search_phrase: "купить газобетон в иркутске цены", position1: "1", position2: "1"},
+          { search_phrase: "газобетон цена", position1: "1", position2: "1"},
+          { search_phrase: "газобетон цена за куб", position1: "1", position2: "1"},
+          { search_phrase: "стоимость газобетона в иркутске цены", position1: "1", position2: "1"},
+          { search_phrase: "газобетон", position1: "3", position2: "3"},
+          { search_phrase: "газобетон в иркутске", position1: "1", position2: "1"},
+          { search_phrase: "где качественный газобетон в иркутске цена за куб купить сегодня дёшево", position1: "1", position2: "2"},
+          { search_phrase: "купить газобетон", position1: "1", position2: "1"},
+          { search_phrase: "купить газобетон в иркутске", position1: "1", position2: "1"},
+          { search_phrase: "газобетон иркутск цена", position1: "1", position2: "1"},
+          { search_phrase: "купить газобетон в иркутске цены", position1: "1", position2: "1"},
+          { search_phrase: "газобетон цена", position1: "1", position2: "1"},
+          { search_phrase: "газобетон цена за куб", position1: "1", position2: "1"},
+          { search_phrase: "стоимость газобетона в иркутске цены", position1: "1", position2: "1"}
+        ],
+        top10Percentage: 93
       }
     },
     methods: {
@@ -160,6 +194,9 @@
   }
   .row {
     height: 512px;
+  }
+  .row:last-child {
+    height: auto;
   }
   .row > *:not(:last-child) {
     margin-right: 1.5rem;
