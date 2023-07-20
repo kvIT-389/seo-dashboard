@@ -92,7 +92,7 @@
 <style scoped>
   .chart-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 640px;
     margin-right: auto;
   }
   .chart-title {
@@ -104,7 +104,6 @@
     background-color: white;
     border-radius: 0.7rem;
   }
-  
   .chart-legend {
     margin-top: 0.7rem;
   }

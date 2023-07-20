@@ -2,6 +2,7 @@
   import Header from "./components/Header.vue"
   import TrafficSources from "./components/TrafficSources.vue"
   import TrafficSegmentation from "./components/TrafficSegmentation.vue"
+  import Devices from "./components/Devices.vue"
 </script>
 
 <template>
@@ -12,6 +13,7 @@
   <div class="row">
     <TrafficSources :data="sourcesData"></TrafficSources>
     <TrafficSegmentation :data="segmentationData"></TrafficSegmentation>
+    <Devices :data="devicesData"></Devices>
   </div>
 </template>
 
@@ -48,6 +50,12 @@
             label: { show: false }
           }
         ],
+        devicesData: [
+          { value: 1048, name: "Смартфоны" },
+          { value: 735, name: "Персональные компьютеры" },
+          { value: 580, name: "Планшеты" },
+          { value: 484, name: "ТВ" }
+        ]
       }
     },
     methods: {
@@ -70,13 +78,13 @@
 <style scoped>
   .row {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
+    margin: 0 1.5rem;
   }
   .row > * {
     flex: 1;
-    margin-right: 50px;
   }
-  .row > *:last-child {
-  margin-right: 15px;
+  .row > *:not(:last-child) {
+    margin-right: 1.5rem;
   }
 </style>

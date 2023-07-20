@@ -87,14 +87,13 @@
   }
   .chart-container {
     width: 100%;
-    max-width: 600px;
-    margin-left: 1.5rem;
+    max-width: 640px;
     margin-right: auto;
   }
   #chartTrafficSources {
     width: 100%;
     height: 500px;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 0.7rem;
   }
 </style>
