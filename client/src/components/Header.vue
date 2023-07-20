@@ -39,6 +39,8 @@ defineProps({
       watch(selectedRange, (newRange) => {
         startDate.value = newRange[0];
         endDate.value = newRange[1];
+
+        this.$emit("update:selected-range", newRange)
       });
 
       return {

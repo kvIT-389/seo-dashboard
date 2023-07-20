@@ -1,4 +1,6 @@
 <script setup>
+  import axios from "axios"
+
   import Header from "./components/Header.vue"
   import TrafficSources from "./components/TrafficSources.vue"
   import TrafficSegmentation from "./components/TrafficSegmentation.vue"
@@ -12,8 +14,7 @@
 
 <template>
   <Header :dashboard_name="dashboard_name"
-          @update:start-date="updateBeginDate"
-          @update:end-date="updateEndDate"></Header>
+          @update:selected-range="updateDates"></Header>
 
   <div class="row">
     <TrafficSources :data="sourcesData">
@@ -62,7 +63,9 @@
       return {
         dashboard_name: "Байкальский Газобетон",
         startDate: null,
+        startDateString: null,
         endDate: null,
+        endDateString: null,
         sourcesData: [
           { value: 348, name: "Прямые заходы" },
           { value: 735, name: "Переходы из поисковых систем" },
@@ -186,7 +189,37 @@
         const options = { day: "numeric", month: "numeric", year: "numeric" };
 
         this.endDate = endDate.toLocaleDateString("ru-RU", options);
-      }
+      },
+      updateDates(newRange) {
+
+        this.startDate = new Date(newRange[0]);
+        this.startDate.setHours(0, 0, 0, 0);
+
+        this.endDate = new Date(newRange[1]);
+        this.endDate.setHours(0, 0, 0, 0);
+
+        const options = { day: "numeric", month: "numeric", year: "numeric" };
+
+        this.startDateString = this.startDate.toLocaleDateString("ru-RU", options);
+        this.endDateString = this.endDate.toLocaleDateString("ru-RU", options);
+
+        this.updateData("device_categories");
+      },
+      async updateData(data_section) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8000/api/get/${data_section}?` + new URLSearchParams({
+              date1: this.startDate.toISOString().split("T")[0],
+              date2: this.endDate.toISOString().split("T")[0],
+              ref_date: this.startDate.toISOString().split("T")[0]
+            })
+          );
+
+          // this.devicesData = response.data.data;
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }
   }
 </script>

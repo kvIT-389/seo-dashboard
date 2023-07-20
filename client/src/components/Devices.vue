@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-  import { onMounted, ref } from "vue";
+  import { onMounted, onUpdated, ref } from "vue";
   import * as echarts from "echarts";
 
   const props = defineProps({
@@ -69,10 +69,16 @@
     ]
   });
 
+  let chart;
+
   onMounted(() => {
-    const chart = echarts.init(document.getElementById("chartDevices"));
+    chart = echarts.init(document.getElementById("chartDevices"));
     chart.setOption(chartOptions.value);
   });
+
+  onUpdated(() => {
+    chart.setOption(chartOptions.value);
+  })
 </script>
 
 <style scoped>
