@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, ref, defineProps } from "vue";
+  import { computed, onMounted } from "vue";
   import * as echarts from "echarts";
 
   const props = defineProps({

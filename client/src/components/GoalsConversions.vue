@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-  import { onMounted, ref, defineProps, defineEmits } from "vue";
+  import { onMounted, ref, defineEmits } from "vue";
   import * as echarts from "echarts";
 
   const emits = defineEmits(["selectedOptionChanged"]);
