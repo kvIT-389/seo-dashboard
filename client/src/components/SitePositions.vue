@@ -36,8 +36,8 @@
 <style>
   .tableContainer {
     display: flex;
-    width: 60%;
-    max-width: 1442px;
+    width: 75%;
+    max-width: 1500px;
     padding: 1.2rem;
     border-radius: 0.7rem;
     background-color: white;

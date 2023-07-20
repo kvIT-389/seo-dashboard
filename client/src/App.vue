@@ -7,6 +7,7 @@
   import Visits from "./components/Visits.vue"
   import GoalsConversions from "./components/GoalsConversions.vue"
   import SitePositions from "./components/SitePositions.vue"
+  import SearchResultsTop from "./components/SearchResultsTop.vue"
 </script>
 
 <template>
@@ -44,6 +45,11 @@
     <SitePositions :tableHeaders="sitePositionsTableHeaders"
                    :tableItems="sitePositionsTableItems">
     </SitePositions>
+
+    <SearchResultsTop :beginDate="startDate"
+                      :endDate="endDate"
+                      :percentage="searchResultsTopPercentage">
+    </SearchResultsTop>
   </div>
 </template>
 
@@ -165,7 +171,7 @@
           { search_phrase: "газобетон цена за куб", position1: "1", position2: "1"},
           { search_phrase: "стоимость газобетона в иркутске цены", position1: "1", position2: "1"}
         ],
-        top10Percentage: 93
+        searchResultsTopPercentage: 93
       }
     },
     methods: {
