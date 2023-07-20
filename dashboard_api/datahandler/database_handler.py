@@ -18,7 +18,7 @@ class DatabaseHandler:
 
         self._specific_params = {
             "new_users": {
-                "source_model": Visits,
+                "model": Visits,
                 "group_by": {
                     "fields": ("date", ),
                     "aggregates": {
@@ -51,12 +51,12 @@ class DatabaseHandler:
             "search_engines": {
                 "model": Visits,
                 "group_by": {
-                    "fields": ("search_engine", ),
+                    "fields": ("date", "search_engine"),
                     "aggregates": {
                         "visits": models.Sum("visits")
                     }
                 },
-                "order_by": ("visits", )
+                "order_by": ("search_engine", "date")
             },
             "search_phrases": {
                 "model": Visits,
@@ -80,11 +80,17 @@ class DatabaseHandler:
             },
             "positions": {
                 "model": Position,
-                "order_by": ("date", )
+                "group_by": {
+                    "fields": ("date", "search_phrase"),
+                    "aggregates": {
+                        "position": models.Avg("position")
+                    }
+                },
+                "order_by": ("date", "position")
             },
             "tops": {
                 "model": SearchResultsTop,
-                "order_by": ("date", "position")
+                "order_by": ("date", )
             }
         }
 
@@ -176,18 +182,15 @@ class DatabaseHandler:
             )
         )
 
-        if (data_section == "positions"):
-            return dates_filtered
-
         if (data_section == "tops"):
-            qs = dates_filtered.values("date", "region_index")
+            qs = dates_filtered.values("date")
 
             max_value = qs.aggregate(
                 max_value=models.Max("value")
             ).get("max_value")
 
             return qs.annotate(
-                percentage=models.F("value") * 100 / max_value
+                percentage=models.Avg("value") * 100 / max_value
             )
 
         return dates_filtered.group_by(

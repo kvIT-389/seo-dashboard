@@ -29,6 +29,7 @@ class SearchEngineSerializer(serializers.Serializer):
         allow_blank=True,
         allow_null=True
     )
+    date = serializers.DateField()
     visits = serializers.IntegerField()
 
 
@@ -56,13 +57,11 @@ class PositionsSerializer(serializers.Serializer):
         source="search_phrase.search_phrase"
     )
     date = serializers.DateField()
-    region_index = serializers.IntegerField()
     position = serializers.IntegerField()
 
 
 class SearchResultsTopSerializer(serializers.Serializer):
     date = serializers.DateField()
-    region_index = serializers.IntegerField()
     percentage = serializers.IntegerField()
 
 
