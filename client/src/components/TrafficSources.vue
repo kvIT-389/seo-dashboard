@@ -77,8 +77,6 @@
 </script>
 
 <style scoped>
-  @import url("../styles/fonts.css");
-
   .chart-title {
     font-family: "Panton";
   }
@@ -92,7 +90,7 @@
   }
   #chartTrafficSources {
     width: 100%;
-    height: 500px;
+    height: 100%;
     background-color: white;
     border-radius: 0.7rem;
   }

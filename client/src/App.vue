@@ -3,6 +3,7 @@
   import TrafficSources from "./components/TrafficSources.vue"
   import TrafficSegmentation from "./components/TrafficSegmentation.vue"
   import Devices from "./components/Devices.vue"
+  import SearchEngines from "./components/SearchEngines.vue"
 </script>
 
 <template>
@@ -14,6 +15,10 @@
     <TrafficSources :data="sourcesData"></TrafficSources>
     <TrafficSegmentation :data="segmentationData"></TrafficSegmentation>
     <Devices :data="devicesData"></Devices>
+  </div>
+  <div class="row">
+    <SearchEngines :xData="searchEnginesXData"
+                   :chartData="searchEnginesChartData"></SearchEngines>
   </div>
 </template>
 
@@ -55,7 +60,34 @@
           { value: 735, name: "Персональные компьютеры" },
           { value: 580, name: "Планшеты" },
           { value: 484, name: "ТВ" }
-        ]
+        ],
+        searchEnginesXData: ["23.07.2002", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн"],
+        searchEnginesChartData: [
+          {
+            name: "Яндекс",
+            type: "line",
+            
+            data: [120, 132, 101, 134, 90, 230, 210, 120, 132, 101, 134, 90, 230, 210]
+          },
+          {
+            name: "Google",
+            type: "line",
+            
+            data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191, 234, 290, 330, 310]
+          },
+          {
+            name: "Bing",
+            type: "line",
+            
+            data: [150, 232, 201, 154, 190, 330, 410, 150, 232, 201, 154, 190, 330, 410]
+          },
+          {
+            name: "Mail.ru",
+            type: "line",
+            
+            data: [320, 332, 301, 334, 390, 330, 320, 320, 332, 301, 334, 390, 330, 320]
+          }
+        ],
       }
     },
     methods: {
@@ -79,12 +111,11 @@
   .row {
     display: flex;
     justify-content: space-between;
-    margin: 0 1.5rem;
-  }
-  .row > * {
-    flex: 1;
+    margin: 1.5rem;
+    margin-top: 0;
   }
   .row > *:not(:last-child) {
+    height: 512px;
     margin-right: 1.5rem;
   }
 </style>

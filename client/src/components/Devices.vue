@@ -33,12 +33,10 @@
       bottom: "5%",
       left: "center",
       textStyle: {
-          
           fontSize: 12,
           fontWeight: "bold",
           fontFamily: "Panton",
-          color: "#352958" 
-          // Используем ваш шрифт для заголовка
+          color: "#352958"
         }
     },
     toolbox: {
@@ -50,7 +48,7 @@
       {
         name: "Access From",
         type: "pie",
-        radius: ["20%", "60%"],
+        radius: ["20%", "55%"],
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -84,7 +82,7 @@
   }
   #chartDevices {
     width: 100%;
-    height: 500px;
+    height: 100%;
     background-color: white;
     border-radius: 0.7rem;
   }
