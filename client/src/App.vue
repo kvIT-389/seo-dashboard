@@ -4,6 +4,8 @@
   import TrafficSegmentation from "./components/TrafficSegmentation.vue"
   import Devices from "./components/Devices.vue"
   import SearchEngines from "./components/SearchEngines.vue"
+  import Visits from "./components/Visits.vue"
+  import GoalsConversions from "./components/GoalsConversions.vue"
 </script>
 
 <template>
@@ -12,13 +14,30 @@
           @update:end-date="updateEndDate"></Header>
 
   <div class="row">
-    <TrafficSources :data="sourcesData"></TrafficSources>
-    <TrafficSegmentation :data="segmentationData"></TrafficSegmentation>
-    <Devices :data="devicesData"></Devices>
+    <TrafficSources :data="sourcesData">
+    </TrafficSources>
+
+    <TrafficSegmentation :data="segmentationData">
+    </TrafficSegmentation>
+
+    <Devices :data="devicesData">
+    </Devices>
   </div>
   <div class="row">
     <SearchEngines :xData="searchEnginesXData"
-                   :chartData="searchEnginesChartData"></SearchEngines>
+                   :chartData="searchEnginesChartData">
+    </SearchEngines>
+
+    <Visits :xData="visitsXData"
+            :chartData="visitsChartData">
+    </Visits>
+  </div>
+  <div class="row">
+    <GoalsConversions :xData="goalConversionsXData"
+                      :menuOptions="goalConversionsMenuOptions"
+                      :goalAchieveData="goalAchieveData"
+                      :conversionData="goalConversionData">
+    </GoalsConversions>
   </div>
 </template>
 
@@ -61,7 +80,7 @@
           { value: 580, name: "Планшеты" },
           { value: 484, name: "ТВ" }
         ],
-        searchEnginesXData: ["23.07.2002", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн"],
+        searchEnginesXData: ["Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн"],
         searchEnginesChartData: [
           {
             name: "Яндекс",
@@ -88,6 +107,31 @@
             data: [320, 332, 301, 334, 390, 330, 320, 320, 332, 301, 334, 390, 330, 320]
           }
         ],
+        visitsXData: ["Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн"],
+        visitsChartData: [
+          {
+            name: "Посетители",
+            type: "line",
+
+            data: [126, 122, 101, 13, 90, 230, 210, 120, 132, 101, 134, 90, 230, 210]
+          },
+          {
+            name: "Новые посетители",
+            type: "line",
+
+            data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191, 234, 290, 330, 310]
+          }
+        ],
+        goalConversionsXData: ["Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн"],
+        goalConversionsMenuOptions: [
+          { label: "Цель 1" },
+          { label: "Цель 2" },
+          { label: "Цель 3" },
+          { label: "Цель 4" },
+          { label: "Цель 5" }
+        ],
+        goalAchieveData: [120, 132, 101, 134, 90, 230, 210],
+        goalConversionData: [2, 18, 19, 64, 29, 33, 99,],
       }
     },
     methods: {
@@ -114,8 +158,10 @@
     margin: 1.5rem;
     margin-top: 0;
   }
-  .row > *:not(:last-child) {
+  .row {
     height: 512px;
+  }
+  .row > *:not(:last-child) {
     margin-right: 1.5rem;
   }
 </style>

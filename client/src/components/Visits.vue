@@ -1,6 +1,6 @@
 <template>
   <div class="chart-container">
-    <div ref="chartSearchEngine" id="chartSearchEngine"></div>
+    <div ref="chartVisits" id="chartVisits"></div>
   </div>
 </template>
 
@@ -11,15 +11,15 @@
   const props = defineProps(["xData", "chartData"]);
   const option = ref({
     title: {
-      text: "Поисковые системы",
+      text: "Посетители",
       left: "center",
       top: 20,
       textStyle: {
-          fontSize: 24,
-          fontWeight: "bold",
-          fontFamily: "Panton",
-          color: "#352958" 
-        }
+        fontSize: 24,
+        fontWeight: "bold",
+        fontFamily: "Panton",
+        color: "#352958" 
+      }
     },
     tooltip: {
       trigger: "axis"
@@ -43,12 +43,11 @@
     yAxis: {
       type: "value"
     },
-    series: props.chartData,
-    
+    series: props.chartData
   });
 
   onMounted(() => {
-    const chart = echarts.init(document.getElementById("chartSearchEngine"));
+    const chart = echarts.init(document.getElementById("chartVisits"));
     chart.setOption(option.value);
   });
 </script>
@@ -58,7 +57,7 @@
     width: 100%;
     max-width: 1000px;
   }
-  #chartSearchEngine {
+  #chartVisits {
     width: 100%;
     height: 100%;
     background-color: white;
