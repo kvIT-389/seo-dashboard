@@ -1,6 +1,7 @@
 <script setup>
   import Header from "./components/Header.vue"
   import TrafficSources from "./components/TrafficSources.vue"
+  import TrafficSegmentation from "./components/TrafficSegmentation.vue"
 </script>
 
 <template>
@@ -8,7 +9,10 @@
           @update:start-date="updateBeginDate"
           @update:end-date="updateEndDate"></Header>
 
-  <TrafficSources :data="sourcesData"></TrafficSources>
+  <div class="row">
+    <TrafficSources :data="sourcesData"></TrafficSources>
+    <TrafficSegmentation :data="segmentationData"></TrafficSegmentation>
+  </div>
 </template>
 
 <script>
@@ -27,7 +31,23 @@
           { value: 580, name: "Переходы по ссылкам на сайтах" },
           { value: 484, name: "Переходы из социальных сетей" },
           { value: 3, name: "Остальные" }
-        ]
+        ],
+        segmentationData: [
+          { value: 234, name: "Байкальский газобетон Иркутск" },
+          { value: 735, name: "bgazobeton.ru" },
+          { value: 580, name: "Газобетон иркутск" },
+          { value: 484, name: "Байкальский газобетон" },
+          { value: 300, name: "Газобетон" },
+          {
+            value: 234 + 735 + 580 + 484 + 300,
+            itemStyle: {
+              color: "none",
+              decal: { symbol: "none" }
+            },
+            name:"",
+            label: { show: false }
+          }
+        ],
       }
     },
     methods: {
@@ -46,3 +66,17 @@
     }
   }
 </script>
+
+<style scoped>
+  .row {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .row > * {
+    flex: 1;
+    margin-right: 50px;
+  }
+  .row > *:last-child {
+  margin-right: 15px;
+  }
+</style>
