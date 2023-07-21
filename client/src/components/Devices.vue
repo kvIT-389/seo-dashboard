@@ -14,6 +14,7 @@
       default: () => []
     }
   });
+
   const chartOptions = ref({
     title: {
       text: "Устройства",
@@ -77,6 +78,7 @@
   });
 
   onUpdated(() => {
+    chartOptions.value.series[0].data = props.data;
     chart.setOption(chartOptions.value);
   })
 </script>

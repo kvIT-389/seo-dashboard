@@ -55,6 +55,8 @@
 </template>
 
 <script>
+  const api_url = "http://localhost:8000/api/get";
+
   export default {
     components: {
       Header
@@ -89,12 +91,7 @@
             label: { show: false }
           }
         ],
-        devicesData: [
-          { value: 1048, name: "Смартфоны" },
-          { value: 735, name: "Персональные компьютеры" },
-          { value: 580, name: "Планшеты" },
-          { value: 484, name: "ТВ" }
-        ],
+        devicesData: [],
         searchEnginesXData: ["Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн"],
         searchEnginesChartData: [
           {
@@ -177,19 +174,10 @@
         searchResultsTopPercentage: 93
       }
     },
+    mounted() {
+      this.updateData();
+    },
     methods: {
-      updateBeginDate(new_begin_date) {
-        const startDate = new Date(new_begin_date);
-        const options = { day: "numeric", month: "numeric", year: "numeric" };
-
-        this.startDate = startDate.toLocaleDateString("ru-RU", options);
-      },
-      updateEndDate(new_end_date) {
-        const endDate = new Date(new_end_date);
-        const options = { day: "numeric", month: "numeric", year: "numeric" };
-
-        this.endDate = endDate.toLocaleDateString("ru-RU", options);
-      },
       updateDates(newRange) {
 
         this.startDate = new Date(newRange[0]);
@@ -203,23 +191,44 @@
         this.startDateString = this.startDate.toLocaleDateString("ru-RU", options);
         this.endDateString = this.endDate.toLocaleDateString("ru-RU", options);
 
-        this.updateData("device_categories");
+        this.updateData();
       },
-      async updateData(data_section) {
+      async getData(data_section) {
         try {
+          let params = {}
+          if (this.startDate) {
+            params.date1 = this.startDate?.toISOString().split("T")[0];
+          }
+          if (this.endDate) {
+            params.date2 = this.endDate?.toISOString().split("T")[0];
+          }
+
           const response = await axios.get(
-            `http://localhost:8000/api/get/${data_section}?` + new URLSearchParams({
-              date1: this.startDate.toISOString().split("T")[0],
-              date2: this.endDate.toISOString().split("T")[0],
-              ref_date: this.startDate.toISOString().split("T")[0]
-            })
+            `${api_url}/${data_section}?` + new URLSearchParams(params)
           );
 
-          // this.devicesData = response.data.data;
-        } catch (error) {
+          const response_json = await response.data;
+          return response_json;
+        }
+        catch (error) {
           console.log(error);
+
+          return {
+            data: []
+          };
         }
       },
+      async updateData() {
+        const data = await this.getData("device_categories");
+        this.devicesData = [];
+        
+        data.data.map((item) => {
+          this.devicesData.push({
+            name: item.device_category,
+            value: item.visits
+          })
+        });
+      }
     }
   }
 </script>
