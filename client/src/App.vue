@@ -68,13 +68,7 @@
         startDateString: null,
         endDate: null,
         endDateString: null,
-        sourcesData: [
-          { value: 348, name: "Прямые заходы" },
-          { value: 735, name: "Переходы из поисковых систем" },
-          { value: 580, name: "Переходы по ссылкам на сайтах" },
-          { value: 484, name: "Переходы из социальных сетей" },
-          { value: 3, name: "Остальные" }
-        ],
+        sourcesData: [],
         segmentationData: [
           { value: 234, name: "Байкальский газобетон Иркутск" },
           { value: 735, name: "bgazobeton.ru" },
@@ -219,14 +213,38 @@
         }
       },
       async updateData() {
-        const data = await this.getData("device_categories");
+        // Devices
+        const devices_data = await this.getData("device_categories");
         this.devicesData = [];
-        
-        data.data.map((item) => {
+
+        devices_data.data.map((item) => {
           this.devicesData.push({
             name: item.device_category,
             value: item.visits
           })
+        });
+
+        // Traffic Sources
+
+        const sources_data = await this.getData("traffic_sources");
+        this.sourcesData = [];
+        let others_visits = 0;
+
+        sources_data.data.map((item) => {
+          if (this.sourcesData.length < 4) {
+            this.sourcesData.push({
+              name: item.traffic_source,
+              value: item.visits
+            });
+          }
+          else {
+            others_visits += item.visits;
+          }
+        });
+
+        this.sourcesData.push({
+          name: "Others",
+          value: others_visits
         });
       }
     }

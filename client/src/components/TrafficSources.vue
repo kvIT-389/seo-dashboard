@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-  import { computed, onMounted } from "vue";
+  import { computed, onMounted, onUpdated } from "vue";
   import * as echarts from "echarts";
 
   const props = defineProps({
@@ -70,8 +70,15 @@
     return option;
   });
 
+  let chart;
+
   onMounted(() => {
-    const chart = echarts.init(document.getElementById("chartTrafficSources"));
+    chart = echarts.init(document.getElementById("chartTrafficSources"));
+    chart.setOption(chartOptions.value);
+  });
+
+  onUpdated(() => {
+    chartOptions.value.series[0].data = props.data;
     chart.setOption(chartOptions.value);
   });
 </script>
