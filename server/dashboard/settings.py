@@ -1,13 +1,8 @@
 import os
-import dotenv
-
 from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Load variables from BASEDIR/.env file as environment variables.
-dotenv.load_dotenv()
 
 
 # Quick-start development settings - unsuitable for production
