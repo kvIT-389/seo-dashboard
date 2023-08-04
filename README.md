@@ -2,122 +2,23 @@
 
 ## Установка
 
-Следующие шаги установки были протестированы на ОС Ubuntu версии 22.04
-
-### Установка компонентов
-
-```cmd
-$ sudo apt-get update
-$ sudo apt-get install python3-pip python3-dev libpq-dev \
-  postgresql postgresql-contrib
-```
-
-### Настройка базы данных
-
-```cmd
-$ sudo -u postgres psql
-```
-
-Создание пользователя:
-
-```cmd
-postgres=# CREATE USER seo_db_user WITH PASSWORD '<db password>';
-```
-
-Настройка пользователя:
-
-```cmd
-postgres=# ALTER ROLE seo_db_user SET client_encoding TO 'utf8';
-postgres=# ALTER ROLE seo_db_user SET default_transaction_isolation TO 'read committed';
-postgres=# ALTER ROLE seo_db_user SET timezone TO 'UTC';
-```
-
-Создание базы данных и выдача прав доступа пользователю:
-
-```cmd
-postgres=# CREATE DATABASE seo_db;
-postgres=# GRANT ALL PRIVILEGES ON DATABASE seo_db TO seo_db_user;
-```
-
-Выход:
-
-```cmd
-postgres=# \q
-```
-
-### Настройка сервера
-
-Все действия выполняются в каталоге ./server
-
-Установка виртуальной среды:
-
-```cmd
-$ python3 -m pip install virtualenv
-$ python3 -m virtualenv .venv
-```
-
-Активация виртуальной среды:
-
-```cmd
-$ source .venv/bin/activate
-```
-
-Установка зависимостей:
-
-```cmd
-$ pip install -r requirements.txt
-```
-
-Создание и применение миграций:
-
-```cmd
-$ python manage.py makemigrations
-$ python manage.py migrate
-```
-
-Запуск сервера:
-
-```cmd
-$ python manage.py runserver
-```
+Для запуска потребуется [Docker Compose](https://docs.docker.com/compose/install/).
 
 ### Настройка переменных среды
 
-Для корректной работы с базой данных, а также с API Метрики и Topvisor'а, необходимо создать файл с переменными среды, содержащим пароли, токены и прочие данные.
-
-Создание файла:
-
 ```cmd
-$ python create_dotenv.py
+# python create_dotenv.py
 ```
 
-Запуск данного скрипта создаст файл .env с переменными, который необходимо заполнить.
+Запуск данного скрипта создаст файл .env с необходимыми переменными.
 
 - [Получение токена Яндекс.Метрики](https://yandex.ru/dev/metrika/doc/api2/intro/authorization.html)
 - [Получение API-ключа Topvisor'а](https://topvisor.com/ru/api/v2/#)
 
-После обновления данного файла желательно перезапустить сервер.
-
-### Настройка клиентского приложения
-
-Все действия выполняются в каталоге ./client
-
-Установка менеджера npm (если отсутствует):
+### Запуск контейнеров
 
 ```cmd
-sudo apt-get install npm
-```
-
-Установка зависимостей:
-
-```cmd
-npm install
-```
-
-Запуск dev-сервера:
-
-```cmd
-npm run dev
+# docker compose up -d
 ```
 
 ## Использование API сервера
@@ -125,7 +26,7 @@ npm run dev
 Адреса сервера и клиента (при запуске на локальном сервере):
 
 - [Сервер](http://localhost:8000)
-- [Клиент](http://localhost:5173)
+- [Клиент](http://localhost:8080)
 
 Сервер не имеет корня страницы, так как предназначен только для получения данных от него.
 
