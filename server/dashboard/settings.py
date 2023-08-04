@@ -1,8 +1,4 @@
 import os
-from pathlib import Path
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -76,7 +72,7 @@ DATABASES = {
         "USER": os.getenv("DB_USER", ""),
         "PASSWORD": os.getenv("DB_PASSWORD", ""),
         "HOST": os.getenv("DB_HOST", ""),
-        "PORT": "5432"
+        "PORT": os.getenv("DB_PORT", "")
     }
 }
 
