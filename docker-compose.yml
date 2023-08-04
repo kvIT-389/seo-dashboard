@@ -24,5 +24,12 @@ services:
       - .env
     depends_on:
       - db
+  client:
+    build: client
+    command: nginx -g "daemon off;"
+    ports:
+      - 8080:80
+    depends_on:
+      - server
 volumes:
   seo-db:
