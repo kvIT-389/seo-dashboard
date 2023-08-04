@@ -47,7 +47,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://127.0.0.1"
+    os.getenv("CLIENT_ORIGIN")
 ]
 
 ROOT_URLCONF = "dashboard.urls"
@@ -77,11 +77,11 @@ WSGI_APPLICATION = "dashboard.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DATABASE_NAME", ""),
-        "USER": os.getenv("DATABASE_USER", ""),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD", ""),
-        "HOST": "127.0.0.1",
-        "PORT": ""
+        "NAME": os.getenv("DB_NAME", ""),
+        "USER": os.getenv("DB_USER", ""),
+        "PASSWORD": os.getenv("DB_PASSWORD", ""),
+        "HOST": os.getenv("DB_HOST", ""),
+        "PORT": "5432"
     }
 }
 
