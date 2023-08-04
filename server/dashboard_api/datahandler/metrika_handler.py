@@ -1,5 +1,4 @@
 import os
-import dotenv
 
 import json
 import requests
@@ -7,9 +6,6 @@ import requests
 import datetime
 
 from pathlib import Path
-
-
-dotenv.load_dotenv()
 
 
 class MetrikaHandler:
